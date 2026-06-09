@@ -1,7 +1,7 @@
+import 'package:atbookappbeta/models/login_request.dart';
 import 'package:dio/dio.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
-
 import '../services/api_services.dart';
 import '../views/dashboard_screen.dart';
 
@@ -15,51 +15,17 @@ class AuthController extends GetxController {
     try {
       isLoading.value = true;
 
-      final response = await apiService.login(email, password);
+      final request = LoginRequest(email: email, password: password);
 
-      print("STATUS => ${response.statusCode}");
-      print("DATA => ${response.data}");
+      final result = await apiService.login(request);
 
-      if (response.statusCode == 200 || response.statusCode == 201) {
-        String? token;
+      await box.write('access_token', result.token);
 
-        // বিভিন্ন common token key check
-        if (response.data['access_token'] != null) {
-          token = response.data['access_token'];
-        } else if (response.data['token'] != null) {
-          token = response.data['token'];
-        }
-
-        if (token == null || token.isEmpty) {
-          Get.snackbar("Error", "Token not found in response");
-          return;
-        }
-
-        await box.write('access_token', token);
-
-        Get.snackbar("Success", "Login Successful");
-
-        Get.offAll(() => const DashboardScreen());
-      }
-    } on DioException catch (e) {
-      print(e.response?.data);
-
-      Get.snackbar(
-        "Error",
-        e.response?.data.toString() ?? e.message ?? "Login Failed",
-      );
+      Get.offAll(() => const DashboardScreen());
     } catch (e) {
-      print(e);
-
       Get.snackbar("Error", e.toString());
     } finally {
       isLoading.value = false;
     }
-  }
-
-  void logout() {
-    box.remove('access_token');
-
-    Get.offAllNamed('/login');
   }
 }

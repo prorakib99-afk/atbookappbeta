@@ -1,3 +1,5 @@
+import 'package:atbookappbeta/models/login_request.dart';
+import 'package:atbookappbeta/models/login_response.dart';
 import 'package:dio/dio.dart';
 import 'package:get_storage/get_storage.dart';
 
@@ -25,14 +27,9 @@ class ApiService {
           ),
         );
 
-  Future<Response> login(String email, String password) async {
-    return await dio.post(
-      '/api/auth/login',
-      data: {'email': email, 'password': password},
-    );
-  }
+  Future<LoginResponse> login(LoginRequest request) async {
+    final response = await dio.post('/api/auth/login', data: request.toJson());
 
-  Future<Response> getProfile() async {
-    return await dio.get('/api/auth/me');
+    return LoginResponse.fromJson(response.data);
   }
 }
