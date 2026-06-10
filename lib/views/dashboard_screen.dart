@@ -1,86 +1,80 @@
 import 'package:atbookappbeta/controller/auth_controller.dart';
+import 'package:atbookappbeta/controller/dashboard_controller.dart';
+import 'package:atbookappbeta/pages/dashboard_page.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class DashboardScreen extends StatefulWidget {
+class DashboardScreen extends StatelessWidget {
   const DashboardScreen({super.key});
 
   @override
-  State<DashboardScreen> createState() => _DashboardScreenState();
-}
-
-class _DashboardScreenState extends State<DashboardScreen> {
-  final AuthController authController = Get.find<AuthController>();
-
-  bool isCollapsed = false;
-
-  @override
   Widget build(BuildContext context) {
+    final dashboardController = Get.find<DashboardController>();
+    final authController = Get.find<AuthController>();
+
+    final pages = [
+      const DashboardPage(),
+      const UsersPage(),
+      const DepartmentsPage(),
+      const EmployeesPage(),
+      const AccountingPage(),
+      const ReportsPage(),
+      const SettingsPage(),
+    ];
+
     return Scaffold(
       body: Row(
         children: [
-          /// Sidebar
-          AnimatedContainer(
-            duration: const Duration(milliseconds: 300),
-            width: isCollapsed ? 70 : 260,
-            color: const Color(0xff1E293B),
-
+          Container(
+            width: 250,
+            color: Colors.blueGrey.shade900,
             child: Column(
               children: [
-                const SizedBox(height: 20),
+                const SizedBox(height: 40),
 
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Icon(Icons.account_balance, color: Colors.white),
-
-                    if (!isCollapsed)
-                      const Padding(
-                        padding: EdgeInsets.only(left: 10),
-                        child: Text(
-                          "ATBOOK",
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 22,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                  ],
+                const Text(
+                  "ATBOOK ERP",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
 
                 const SizedBox(height: 30),
 
-                Expanded(
-                  child: ListView(
-                    children: [
-                      _menuTile(icon: Icons.dashboard, title: "Dashboard"),
+                menuItem(Icons.dashboard, "Dashboard", 0, dashboardController),
 
-                      _menuTile(icon: Icons.people, title: "HRM"),
+                menuItem(Icons.people, "Users", 1, dashboardController),
 
-                      _menuTile(icon: Icons.receipt_long, title: "Accounts"),
-
-                      _menuTile(icon: Icons.shopping_cart, title: "Sales"),
-
-                      _menuTile(icon: Icons.bar_chart, title: "Reports"),
-
-                      _menuTile(icon: Icons.settings, title: "Settings"),
-                    ],
-                  ),
+                menuItem(
+                  Icons.apartment,
+                  "Departments",
+                  2,
+                  dashboardController,
                 ),
 
-                const Divider(color: Colors.white24),
+                menuItem(Icons.badge, "Employees", 3, dashboardController),
+
+                menuItem(
+                  Icons.account_balance_wallet,
+                  "Accounting",
+                  4,
+                  dashboardController,
+                ),
+
+                menuItem(Icons.bar_chart, "Reports", 5, dashboardController),
+
+                menuItem(Icons.settings, "Settings", 6, dashboardController),
+
+                const Spacer(),
 
                 ListTile(
                   leading: const Icon(Icons.logout, color: Colors.red),
-
-                  title: isCollapsed
-                      ? null
-                      : const Text(
-                          "Logout",
-                          style: TextStyle(color: Colors.white),
-                        ),
-
+                  title: const Text(
+                    "Logout",
+                    style: TextStyle(color: Colors.white),
+                  ),
                   onTap: () async {
                     await authController.logout();
                   },
@@ -91,68 +85,31 @@ class _DashboardScreenState extends State<DashboardScreen> {
             ),
           ),
 
-          /// Main Content
           Expanded(
             child: Column(
               children: [
-                /// Top Navbar
                 Container(
                   height: 70,
                   padding: const EdgeInsets.symmetric(horizontal: 20),
-                  decoration: const BoxDecoration(
-                    color: Colors.white,
-                    boxShadow: [
-                      BoxShadow(blurRadius: 5, color: Colors.black12),
-                    ],
-                  ),
-
+                  color: Colors.white,
                   child: Row(
                     children: [
-                      IconButton(
-                        onPressed: () {
-                          setState(() {
-                            isCollapsed = !isCollapsed;
-                          });
-                        },
-                        icon: const Icon(Icons.menu),
-                      ),
-
-                      const SizedBox(width: 10),
-
                       const Text(
-                        "Dashboard",
+                        "Dashboard Panel",
                         style: TextStyle(
-                          fontSize: 22,
+                          fontSize: 24,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-
                       const Spacer(),
-
-                      const Icon(Icons.notifications_none),
-
-                      const SizedBox(width: 20),
-
                       CircleAvatar(child: Text("R")),
                     ],
                   ),
                 ),
 
-                /// Dashboard Body
                 Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.all(20),
-                    child: GridView.count(
-                      crossAxisCount: 4,
-                      crossAxisSpacing: 15,
-                      mainAxisSpacing: 15,
-                      children: const [
-                        DashboardCard(title: "Revenue", value: "0"),
-                        DashboardCard(title: "Expenses", value: "6500"),
-                        DashboardCard(title: "Profit", value: "-6500"),
-                        DashboardCard(title: "Customers", value: "0"),
-                      ],
-                    ),
+                  child: Obx(
+                    () => pages[dashboardController.selectedIndex.value],
                   ),
                 ),
               ],
@@ -163,40 +120,22 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
   }
 
-  Widget _menuTile({required IconData icon, required String title}) {
-    return ListTile(
-      leading: Icon(icon, color: Colors.white),
-      title: isCollapsed
-          ? null
-          : Text(title, style: const TextStyle(color: Colors.white)),
-      onTap: () {},
-    );
-  }
-}
-
-class DashboardCard extends StatelessWidget {
-  final String title;
-  final String value;
-
-  const DashboardCard({super.key, required this.title, required this.value});
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      elevation: 3,
-      child: Padding(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(title, style: const TextStyle(fontSize: 16)),
-            const SizedBox(height: 10),
-            Text(
-              value,
-              style: const TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
-            ),
-          ],
-        ),
+  Widget menuItem(
+    IconData icon,
+    String title,
+    int index,
+    DashboardController controller,
+  ) {
+    return Obx(
+      () => ListTile(
+        tileColor: controller.selectedIndex.value == index
+            ? Colors.blue
+            : Colors.transparent,
+        leading: Icon(icon, color: Colors.white),
+        title: Text(title, style: const TextStyle(color: Colors.white)),
+        onTap: () {
+          controller.changePage(index);
+        },
       ),
     );
   }

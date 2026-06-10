@@ -4,6 +4,11 @@ class ApiEndpoints {
   // Auth
   static const String login = "/api/auth/login";
   static const String me = "/api/auth/me";
+  static const String acceptinvitation = "/api/auth/accept-invitation";
+
+  //Organization
+  static const String organizations = "/api/organizations";
+  static const String organizationDetails = "/api/organizations/{id}";
 
   // Dashboard
   static const String dashboard = "/api/dashboard";
