@@ -30,6 +30,8 @@ class ApiService {
   Future<LoginResponse> login(LoginRequest request) async {
     final response = await dio.post('/api/auth/login', data: request.toJson());
 
+    print("Response => ${response.data}");
+
     return LoginResponse.fromJson(response.data);
   }
 }
