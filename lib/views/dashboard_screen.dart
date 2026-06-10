@@ -1,141 +1,271 @@
-import 'package:atbookappbeta/controller/auth_controller.dart';
-import 'package:atbookappbeta/controller/dashboard_controller.dart';
-import 'package:atbookappbeta/pages/dashboard_page.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+
+import '../controller/auth_controller.dart';
+import '../controller/dashboard_controller.dart';
+import '../pages/dashboard_page.dart';
 
 class DashboardScreen extends StatelessWidget {
   const DashboardScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final dashboardController = Get.find<DashboardController>();
-    final authController = Get.find<AuthController>();
+    final DashboardController dashboardController =
+        Get.find<DashboardController>();
+
+    final AuthController authController = Get.find<AuthController>();
 
     final pages = [
       const DashboardPage(),
-      const UsersPage(),
-      const DepartmentsPage(),
-      const EmployeesPage(),
-      const AccountingPage(),
-      const ReportsPage(),
-      const SettingsPage(),
+
+      const Center(
+        child: Text(
+          "Users",
+          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+        ),
+      ),
+
+      const Center(
+        child: Text(
+          "Departments",
+          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+        ),
+      ),
+
+      const Center(
+        child: Text(
+          "Employees",
+          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+        ),
+      ),
+
+      const Center(
+        child: Text(
+          "Accounting",
+          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+        ),
+      ),
+
+      const Center(
+        child: Text(
+          "Reports",
+          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+        ),
+      ),
+
+      const Center(
+        child: Text(
+          "Settings",
+          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+        ),
+      ),
     ];
 
     return Scaffold(
-      body: Row(
-        children: [
-          Container(
-            width: 250,
-            color: Colors.blueGrey.shade900,
-            child: Column(
-              children: [
-                const SizedBox(height: 40),
-
-                const Text(
-                  "ATBOOK ERP",
+      drawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: [
+            const DrawerHeader(
+              decoration: BoxDecoration(color: Colors.orange),
+              child: Center(
+                child: Text(
+                  "AT BOOK ERP",
                   style: TextStyle(
                     color: Colors.white,
-                    fontSize: 22,
+                    fontSize: 24,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
+              ),
+            ),
 
-                const SizedBox(height: 30),
+            ListTile(
+              leading: const Icon(Icons.dashboard),
+              title: const Text("Dashboard"),
+              onTap: () {
+                dashboardController.changePage(0);
+                Get.back();
+              },
+            ),
 
-                menuItem(Icons.dashboard, "Dashboard", 0, dashboardController),
+            ExpansionTile(
+              leading: const Icon(Icons.account_balance),
+              title: const Text("Accounts"),
+              children: const [
+                ListTile(title: Text("Chart Of Accounts")),
+                ListTile(title: Text("List Accounts")),
+                ListTile(title: Text("Bank Accounts")),
+                ListTile(title: Text("Cash Accounts")),
+              ],
+            ),
 
-                menuItem(Icons.people, "Users", 1, dashboardController),
+            ExpansionTile(
+              leading: const Icon(Icons.swap_horiz),
+              title: const Text("Transactions"),
+              children: const [ListTile(title: Text("Transaction List"))],
+            ),
 
-                menuItem(
-                  Icons.apartment,
-                  "Departments",
-                  2,
-                  dashboardController,
-                ),
+            ExpansionTile(
+              leading: const Icon(Icons.money_off),
+              title: const Text("Expenses"),
+              children: const [ListTile(title: Text("Expense List"))],
+            ),
 
-                menuItem(Icons.badge, "Employees", 3, dashboardController),
+            ExpansionTile(
+              leading: const Icon(Icons.attach_money),
+              title: const Text("Income / Deposits"),
+              children: const [ListTile(title: Text("Deposits"))],
+            ),
 
-                menuItem(
-                  Icons.account_balance_wallet,
-                  "Accounting",
-                  4,
-                  dashboardController,
-                ),
+            ExpansionTile(
+              leading: const Icon(Icons.shopping_cart),
+              title: const Text("Sales"),
+              children: const [
+                ListTile(title: Text("Customers")),
+                ListTile(title: Text("Invoices")),
+              ],
+            ),
 
-                menuItem(Icons.bar_chart, "Reports", 5, dashboardController),
+            ExpansionTile(
+              leading: const Icon(Icons.receipt_long),
+              title: const Text("Purchases"),
+              children: const [ListTile(title: Text("Purchase List"))],
+            ),
 
-                menuItem(Icons.settings, "Settings", 6, dashboardController),
-
-                const Spacer(),
-
+            ListTile(
+              leading: const Icon(Icons.bar_chart),
+              title: const Text("Reports"),
+              onTap: () {
+                dashboardController.changePage(5);
+                Get.back();
+              },
+            ),
+            ExpansionTile(
+              leading: const Icon(Icons.badge),
+              title: const Text("HRM"),
+              children: [
                 ListTile(
-                  leading: const Icon(Icons.logout, color: Colors.red),
-                  title: const Text(
-                    "Logout",
-                    style: TextStyle(color: Colors.white),
-                  ),
-                  onTap: () async {
-                    await authController.logout();
+                  title: const Text("Departments"),
+                  onTap: () {
+                    dashboardController.changePage(2);
+                    Get.back();
                   },
                 ),
 
-                const SizedBox(height: 20),
+                ListTile(
+                  title: const Text("Employees"),
+                  onTap: () {
+                    dashboardController.changePage(3);
+                    Get.back();
+                  },
+                ),
               ],
             ),
-          ),
 
-          Expanded(
-            child: Column(
-              children: [
-                Container(
-                  height: 70,
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                  color: Colors.white,
-                  child: Row(
+            ListTile(
+              leading: const Icon(Icons.settings),
+              title: const Text("Settings"),
+              onTap: () {
+                dashboardController.changePage(6);
+                Get.back();
+              },
+            ),
+
+            const Divider(),
+
+            ListTile(
+              leading: const Icon(Icons.logout, color: Colors.red),
+              title: const Text("Logout"),
+              onTap: () async {
+                await authController.logout();
+              },
+            ),
+          ],
+        ),
+      ),
+
+      body: SafeArea(
+        child: Column(
+          children: [
+            Container(
+              height: 80,
+              padding: const EdgeInsets.symmetric(horizontal: 12),
+              decoration: const BoxDecoration(
+                color: Colors.white,
+                boxShadow: [BoxShadow(blurRadius: 4, color: Colors.black12)],
+              ),
+              child: Builder(
+                builder: (context) {
+                  return Row(
                     children: [
-                      const Text(
-                        "Dashboard Panel",
-                        style: TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
+                      IconButton(
+                        icon: const Icon(Icons.menu),
+                        onPressed: () {
+                          Scaffold.of(context).openDrawer();
+                        },
+                      ),
+
+                      const SizedBox(width: 5),
+
+                      const Expanded(
+                        child: Text(
+                          "AT BOOK ERP",
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 1,
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                       ),
-                      const Spacer(),
-                      CircleAvatar(child: Text("R")),
+
+                      IconButton(
+                        onPressed: () {},
+                        icon: const Icon(Icons.notifications_none),
+                      ),
+
+                      const SizedBox(width: 5),
+
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 6,
+                          vertical: 4,
+                        ),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(25),
+                          border: Border.all(color: Colors.grey.shade300),
+                        ),
+                        child: const Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            CircleAvatar(
+                              radius: 15,
+                              child: Text("MR", style: TextStyle(fontSize: 12)),
+                            ),
+
+                            SizedBox(width: 4),
+
+                            Icon(Icons.keyboard_arrow_down, size: 18),
+                          ],
+                        ),
+                      ),
                     ],
-                  ),
-                ),
-
-                Expanded(
-                  child: Obx(
-                    () => pages[dashboardController.selectedIndex.value],
-                  ),
-                ),
-              ],
+                  );
+                },
+              ),
             ),
-          ),
-        ],
-      ),
-    );
-  }
 
-  Widget menuItem(
-    IconData icon,
-    String title,
-    int index,
-    DashboardController controller,
-  ) {
-    return Obx(
-      () => ListTile(
-        tileColor: controller.selectedIndex.value == index
-            ? Colors.blue
-            : Colors.transparent,
-        leading: Icon(icon, color: Colors.white),
-        title: Text(title, style: const TextStyle(color: Colors.white)),
-        onTap: () {
-          controller.changePage(index);
-        },
+            Expanded(
+              child: Container(
+                color: Colors.grey.shade100,
+                child: Obx(
+                  () => pages[dashboardController.selectedIndex.value],
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

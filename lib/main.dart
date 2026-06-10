@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
-
 import 'controller/auth_controller.dart';
 import 'controller/dashboard_controller.dart';
-
 import 'views/dashboard_screen.dart';
 import 'views/login_screen.dart';
 
